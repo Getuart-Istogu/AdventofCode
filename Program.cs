@@ -1,12 +1,71 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
 Console.WriteLine("Hello, World!");
-Console.WriteLine(Day3_1());
-Console.WriteLine(Day3_2());
+Console.WriteLine(Day4_1());
+Console.WriteLine(Day4_2());
+
+static int Day4_2()
+{
+    string inputPath = @"C:\Users\Geti\source\repos\AdventofCode\Input\Day4.txt";
+    List<String> items = new List<string>();
+    int counter = 0;
+
+    foreach (string line in File.ReadLines(inputPath))
+    {
+        string[] pairs = line.Split(',');
+
+        string[] borderA = pairs[0].Split('-');
+        int startA = Int32.Parse(borderA[0]);
+        int endA = Int32.Parse(borderA[1]);
+        var rangeA = Enumerable.Range(startA, endA - startA + 1);
+
+        string[] borderB = pairs[1].Split('-');
+        int startB = Int32.Parse(borderB[0]);
+        int endB = Int32.Parse(borderB[1]);
+        var rangeB = Enumerable.Range(startB, endB - startB + 1);
+
+        if (rangeA.Intersect(rangeB).Count() > 0)
+        {
+            counter++;
+        }
+    }
+
+    return counter;
+}
+
+static int Day4_1()
+{
+    string inputPath = @"C:\Users\Geti\source\repos\AdventofCode\Input\Day4.txt";
+    List<String> items = new List<string>();
+    int counter = 0;
+
+    foreach (string line in File.ReadLines(inputPath))
+    {
+        string[] pairs = line.Split(',');
+        
+        string[] borderA = pairs[0].Split('-');
+        int startA = Int32.Parse(borderA[0]);
+        int endA = Int32.Parse(borderA[1]);
+        var rangeA = Enumerable.Range(startA, endA-startA+1);
+
+        string[] borderB = pairs[1].Split('-');
+        int startB = Int32.Parse(borderB[0]);
+        int endB = Int32.Parse(borderB[1]);
+        var rangeB = Enumerable.Range(startB, endB - startB + 1);
+
+        if (rangeA.All(i=>rangeB.Contains(i)) || rangeB.All(i => rangeA.Contains(i)))
+        {
+            counter++;
+        }
+    }
+
+    return counter;
+}
 
 static int Day3_2()
 {
