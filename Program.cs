@@ -1,13 +1,159 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 
 Console.WriteLine("Hello, World!");
-Console.WriteLine(Day4_1());
-Console.WriteLine(Day4_2());
+Console.WriteLine(Day5_1());
+Console.WriteLine(Day5_2());
+
+
+static string Day5_2()
+{
+    string inputPath = @"C:\Users\Geti\source\repos\AdventofCode\Input\Day5.txt";
+    string inputAll = File.ReadAllText(inputPath);
+    string[] inputs = inputAll.Split("\n\n");
+
+    
+    var crateStacks = new List<Stack<char>>(9);
+    var crateInputs = new List<List<char>>(9);
+    for (int i = 0; i < crateInputs.Capacity; i++)
+    {
+        crateInputs.Add(new List<char>());
+        crateStacks.Add(new Stack<char>());
+    }
+
+    // Stacks-Parsing
+    /*  inputs[0] = header or beginning stack
+     *  inputs[1] = command
+     */
+    var chunks = inputs[0].Chunk(4);
+    int crateID = 0;
+    foreach (var chunk in chunks)
+    {
+        if (Char.IsDigit(chunk[1]))
+            break;
+
+        if (Char.IsLetter(chunk[1]))
+        {
+            crateInputs[crateID].Add(chunk[1]);
+        }
+        crateID++;
+        if (crateID == 9)
+            crateID = 0;
+    }
+
+    // Reverse & Push in Stack
+    for (int i = 0; i < crateInputs.Capacity; i++)
+    {
+        crateInputs[i].Reverse();
+        for (int j = 0; j < crateInputs[i].Count; j++)
+            crateStacks[i].Push(crateInputs[i][j]);
+    }
+
+    // Commands-Parsing
+    var commands = inputs[1].Split(new[] { "move", "from", "to" }, StringSplitOptions.RemoveEmptyEntries);
+    /* commadsInt[0] = move
+     * commandsInt[1] = from
+     * commandsInt[2] = to
+     */
+    List<int[]> commandsInt = new List<int[]>();
+    int commandsIntIndex = 0;
+    List<char> tempStackForPush = new List<char>();
+    for (int i = 0; i < commands.Length; i += 3)
+    {
+        commandsInt.Add(new int[] { Int32.Parse(commands[i]), Int32.Parse(commands[i + 1]), Int32.Parse(commands[i + 2]) });
+        for (int moveAmount = 0; moveAmount < commandsInt[commandsIntIndex][0]; moveAmount++)
+        {
+            tempStackForPush.Add(crateStacks[commandsInt[commandsIntIndex][1] - 1].Pop());          
+        }
+        tempStackForPush.Reverse();
+        foreach(char c in tempStackForPush)
+        {
+            crateStacks[commandsInt[commandsIntIndex][2] - 1].Push(c);
+        }        
+
+        commandsIntIndex++;
+        tempStackForPush.Clear();
+    }
+
+    string result = "";
+    foreach (var crate in crateStacks)
+    {
+        result += crate.Peek();
+    }
+
+    return result;
+}
+
+static string Day5_1()
+{
+    string inputPath = @"C:\Users\Geti\source\repos\AdventofCode\Input\Day5.txt";
+    string inputAll = File.ReadAllText(inputPath);
+    string[] inputs = inputAll.Split("\n\n");
+
+    // Stacks-Parsing
+    var crateStacks = new List<Stack<char>>(9);      
+    var crateInputs = new List<List<char>>(9);
+    for (int i = 0; i < crateInputs.Capacity; i++)
+    {
+        crateInputs.Add(new List<char>());
+        crateStacks.Add(new Stack<char>());
+    }    
+
+    /*  inputs[0] = header or beginning stack
+     *  inputs[1] = command
+     */
+    var chunks = inputs[0].Chunk(4);
+    int crateID = 0;
+    foreach (var chunk in chunks) 
+    {
+        if (Char.IsDigit(chunk[1]))
+            break;
+
+        if (Char.IsLetter(chunk[1]))
+        {
+            crateInputs[crateID].Add(chunk[1]);
+        }
+        crateID++;
+        if(crateID == 9)
+            crateID = 0;
+    }
+
+    // Reverse & Push in Stack
+    for(int i = 0; i < crateInputs.Capacity; i++)
+    {
+        crateInputs[i].Reverse();
+        for(int j=0; j < crateInputs[i].Count; j++)
+            crateStacks[i].Push(crateInputs[i][j]);
+    }
+    
+    // Commands-Parsing
+    var commands = inputs[1].Split(new[] { "move", "from", "to" }, StringSplitOptions.RemoveEmptyEntries);
+    /* commadsInt[0] = move
+     * commandsInt[1] = from
+     * commandsInt[2] = to
+     */
+    List <int[]> commandsInt = new List<int[]>();
+    int commandsIntIndex = 0;
+    for(int i=0; i<commands.Length; i+=3)
+    {
+        commandsInt.Add(new int[] { Int32.Parse(commands[i]), Int32.Parse(commands[i + 1]), Int32.Parse(commands[i + 2]) });
+        for(int moveAmount=0; moveAmount < commandsInt[commandsIntIndex][0]; moveAmount++)
+        {
+            char crate = crateStacks[commandsInt[commandsIntIndex][1]-1].Pop();
+            crateStacks[commandsInt[commandsIntIndex][2]-1].Push(crate);
+        }
+        commandsIntIndex++;
+    }
+
+    string result = "";
+    foreach(var crate in crateStacks)
+    {
+        result += crate.Peek();
+    }
+
+    return result;
+}
+
 
 static int Day4_2()
 {
