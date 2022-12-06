@@ -2,9 +2,29 @@
 using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
-Console.WriteLine(Day5_1());
-Console.WriteLine(Day5_2());
+Console.WriteLine(Day6(4));
+Console.WriteLine(Day6(14));
 
+static int Day6(int amountOfUniqueCharsNeeded)
+{
+    string inputPath = @"C:\Users\Geti\source\repos\AdventofCode\Input\Day6.txt";
+    string inputAll = File.ReadAllText(inputPath);
+    
+    for(int i = 0; i <= inputAll.Length; i++)
+    {
+        var checkMarker = inputAll.Substring(i);
+        if(checkMarker.Count() >= 4)
+        {
+            string marker = inputAll.Substring(i, amountOfUniqueCharsNeeded);
+
+            if(marker.Distinct().Count() == amountOfUniqueCharsNeeded)
+            {
+                return i + amountOfUniqueCharsNeeded;
+            }
+        }
+    }
+    return 0;
+}
 
 static string Day5_2()
 {
