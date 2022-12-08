@@ -20,7 +20,7 @@
                     switch (currentDirectoryName)
                     {
                         case "..":
-                            //currentDirectory = currentDirectory.Parent; 
+                            currentDirectory = currentDirectory.Parent; 
                             break;
 
                         case "/":
@@ -28,7 +28,7 @@
                             break;
 
                         default:
-                            //currentDirectory = currentDirectory.Childs.Find(x => x.Name == currentDirectoryName); 
+                            currentDirectory = currentDirectory.Childs.Find(x => x.Name == currentDirectoryName); 
                             break;
 
                     }
@@ -36,7 +36,7 @@
                 else if (input[i].StartsWith("$ ls"))
                 {
                     int j;
-                    for(j = i+1; !input[j].StartsWith("$") && j < input.Count() ;j++)
+                    for(j = i+1; !input[j].StartsWith("$") && j < input.Count()-1 ;j++)
                     {
                         if (input[j].StartsWith("dir "))
                         {
@@ -50,8 +50,6 @@
                         }
                     }
                     i = j - 1;
-                    Console.WriteLine(i);
-                    Console.WriteLine(j);
                 }
             }
            
