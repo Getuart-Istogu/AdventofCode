@@ -1,9 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using AdventofCode;
 using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
-Console.WriteLine(Day6(4));
-Console.WriteLine(Day6(14));
+
+Console.WriteLine(Day7.Part1()); 
+
 
 static int Day6(int amountOfUniqueCharsNeeded)
 {
@@ -13,7 +15,7 @@ static int Day6(int amountOfUniqueCharsNeeded)
     for(int i = 0; i <= inputAll.Length; i++)
     {
         var checkMarker = inputAll.Substring(i);
-        if(checkMarker.Count() >= 4)
+        if(checkMarker.Count() >= amountOfUniqueCharsNeeded)
         {
             string marker = inputAll.Substring(i, amountOfUniqueCharsNeeded);
 
