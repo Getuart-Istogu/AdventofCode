@@ -3,8 +3,8 @@ using AdventofCode;
 using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
-
-Console.WriteLine(Day7.Part1()); 
+int result = Day7.Part1();
+Console.WriteLine(result); 
 
 
 static int Day6(int amountOfUniqueCharsNeeded)

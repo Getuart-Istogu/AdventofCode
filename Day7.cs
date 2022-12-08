@@ -51,10 +51,8 @@
                     }
                     i = j - 1;
                 }
-            }
-           
-            
-            return 0;
+            }     
+            return rootDirectory.SizeWhichCanBeDeleted();
         }
         class ElfDirectory
         {
@@ -70,12 +68,37 @@
                 Parent = parent;
                 Childs = new List<ElfDirectory>();
             }
+
+            public int SizeWhichCanBeDeleted()
+            {
+                int result = 0;
+                if(this.Files.Count > 0)
+                {
+                    foreach (var file in this.Files)
+                    {
+                        result += file.Size;
+                    }
+                }    
+
+                if (this.Childs.Count > 0)
+                {
+                    foreach (var child in this.Childs)
+                    {
+                        result += child.SizeWhichCanBeDeleted();
+                    }
+                }
+
+                if (result <= 100000)
+                    return result;
+                else
+                    return 0;                
+            }
         }
 
         class ElfFile
         {
-            string Name { get; set;}
-            int Size { get; set; }
+            public string Name { get; set;}
+            public int Size { get; set; }
 
             public ElfFile(string name, int size) 
             {
