@@ -1,10 +1,13 @@
-﻿namespace AdventofCode
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+
+namespace AdventofCode
 {
     internal class Day7
     {
         public static int Part1()
         {
-            string inputPath = @"C:\Users\Geti\source\repos\AdventofCode\Input\Day7Test.txt";
+            string inputPath = @"C:\Users\Geti\source\repos\AdventofCode\Input\Day7.txt";
             ElfDirectory rootDirectory = new ElfDirectory("/", null);
             ElfDirectory currentDirectory = null;
             var input = File.ReadAllLines(inputPath);
@@ -34,65 +37,92 @@
                     }
                 }
                 else if (input[i].StartsWith("$ ls"))
-                {
-                    int j;
-                    for(j = i+1; !input[j].StartsWith("$") && j < input.Count()-1 ;j++)
+                {                    
+                    for(i = i+1; i < input.Count() && !input[i].StartsWith("$") ; i++)
                     {
-                        if (input[j].StartsWith("dir "))
+                        if (input[i].StartsWith("dir "))
                         {
-                            currentDirectoryName = input[j].Split(" ").Last();
+                            currentDirectoryName = input[i].Split(" ").Last();
                             currentDirectory.Childs.Add(new ElfDirectory(currentDirectoryName, currentDirectory));
                         }
-                        else if (char.IsDigit(input[j][0]))
+                        else if (char.IsDigit(input[i][0]))
                         {
-                            String[] fileInfo = input[j].Split(" "); //0:Size ; 1:Name
+                            String[] fileInfo = input[i].Split(" "); //0:Size ; 1:Name
                             currentDirectory.Files.Add(new ElfFile(name: fileInfo[1], size: Int32.Parse(fileInfo[0])));
                         }
                     }
-                    i = j - 1;
+                    i--;
                 }
-            }     
-            return rootDirectory.SizeWhichCanBeDeleted();
+            }
+            int sum = 0;
+            List<int> directorySpace = new List<int>();
+            rootDirectory.SizeWhichCanBeDeleted(ref sum, ref directorySpace);
+
+            int answerPart2;
+            int totalDiskSpace = 70000000;
+            int updateSpace = 30000000;
+            int currentlyUsed = rootDirectory.Size;
+
+            int needed = updateSpace - (totalDiskSpace - currentlyUsed);
+            directorySpace.Sort();
+            directorySpace.Reverse();
+            for(int i=0; i < directorySpace.Count(); i++)
+            {
+                if (needed > directorySpace[i])
+                {
+                    answerPart2 = directorySpace[i - 1];
+                    break;
+                }
+
+            }
+            return 0;
         }
         class ElfDirectory
         {
-            public string Name { get; set; }              // /                a           e
+            public string Name { get; set; }                 // /                a           e
             public List<ElfFile> Files { get; set; }         // b.txt, c.dat     f,g,h.lst   i
             public ElfDirectory Parent { get; set; }         // null             /           a
             public List<ElfDirectory> Childs { get; set; }   // a, d             e           null
-        
+            public int Size { get; set; }
+
             public ElfDirectory(string name, ElfDirectory parent)
             {
                 Name = name;
                 Files = new List<ElfFile>();
                 Parent = parent;
                 Childs = new List<ElfDirectory>();
+                Size = 0;
             }
 
-            public int SizeWhichCanBeDeleted()
+            public int SizeWhichCanBeDeleted(ref int sum, ref List<int> directorySpace)
             {
+                Debug.WriteLine(this.Name);
                 int result = 0;
-                if(this.Files.Count > 0)
+                if (this.Files.Count > 0)
                 {
                     foreach (var file in this.Files)
                     {
                         result += file.Size;
                     }
-                }    
+                }
 
                 if (this.Childs.Count > 0)
                 {
                     foreach (var child in this.Childs)
                     {
-                        result += child.SizeWhichCanBeDeleted();
+                        result += child.SizeWhichCanBeDeleted(ref sum, ref directorySpace);
                     }
                 }
 
-                if (result <= 100000)
-                    return result;
-                else
-                    return 0;                
-            }
+                if(result <= 100000)
+                {
+                    sum += result;
+                }
+
+                this.Size = result;
+                directorySpace.Add(result);
+                return this.Size;                       
+            }           
         }
 
         class ElfFile
