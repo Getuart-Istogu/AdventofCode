@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace AdventofCode
+namespace AdventofCode.Puzzle
 {
     internal class Day7
     {
@@ -13,32 +13,32 @@ namespace AdventofCode
             var input = File.ReadAllLines(inputPath);
             string currentDirectoryName = "";
 
-            for (int i = 0; i < input.Length; i++) 
+            for (int i = 0; i < input.Length; i++)
             {
-                
+
                 if (input[i].StartsWith("$ cd"))
                 {
-                    currentDirectoryName = input[i].Split(' ').Last(); 
-                    
+                    currentDirectoryName = input[i].Split(' ').Last();
+
                     switch (currentDirectoryName)
                     {
                         case "..":
-                            currentDirectory = currentDirectory.Parent; 
+                            currentDirectory = currentDirectory.Parent;
                             break;
 
                         case "/":
-                            currentDirectory = rootDirectory; 
+                            currentDirectory = rootDirectory;
                             break;
 
                         default:
-                            currentDirectory = currentDirectory.Childs.Find(x => x.Name == currentDirectoryName); 
+                            currentDirectory = currentDirectory.Childs.Find(x => x.Name == currentDirectoryName);
                             break;
 
                     }
                 }
                 else if (input[i].StartsWith("$ ls"))
-                {                    
-                    for(i = i+1; i < input.Count() && !input[i].StartsWith("$") ; i++)
+                {
+                    for (i = i + 1; i < input.Count() && !input[i].StartsWith("$"); i++)
                     {
                         if (input[i].StartsWith("dir "))
                         {
@@ -47,8 +47,8 @@ namespace AdventofCode
                         }
                         else if (char.IsDigit(input[i][0]))
                         {
-                            String[] fileInfo = input[i].Split(" "); //0:Size ; 1:Name
-                            currentDirectory.Files.Add(new ElfFile(name: fileInfo[1], size: Int32.Parse(fileInfo[0])));
+                            string[] fileInfo = input[i].Split(" "); //0:Size ; 1:Name
+                            currentDirectory.Files.Add(new ElfFile(name: fileInfo[1], size: int.Parse(fileInfo[0])));
                         }
                     }
                     i--;
@@ -66,9 +66,9 @@ namespace AdventofCode
             int needed = updateSpace - (totalDiskSpace - currentlyUsed);
             directorySpace.Sort();
             directorySpace.Reverse();
-            for(int i=0; i < directorySpace.Count(); i++)
+            for (int i = 0; i < directorySpace.Count(); i++)
             {
-                if (needed > directorySpace[i])
+                if (needed > directorySpace[i]) //358913 > 341260 [73] 366028 [72]
                 {
                     answerPart2 = directorySpace[i - 1];
                     break;
@@ -77,11 +77,12 @@ namespace AdventofCode
             }
             return 0;
         }
+
         class ElfDirectory
         {
             public string Name { get; set; }                 // /                a           e
             public List<ElfFile> Files { get; set; }         // b.txt, c.dat     f,g,h.lst   i
-            public ElfDirectory Parent { get; set; }         // null             /           a
+            public ElfDirectory Parent { get; set; }         // null             /           a          
             public List<ElfDirectory> Childs { get; set; }   // a, d             e           null
             public int Size { get; set; }
 
@@ -96,43 +97,43 @@ namespace AdventofCode
 
             public int SizeWhichCanBeDeleted(ref int sum, ref List<int> directorySpace)
             {
-                Debug.WriteLine(this.Name);
+                Debug.WriteLine(Name);
                 int result = 0;
-                if (this.Files.Count > 0)
+                if (Files.Count > 0)
                 {
-                    foreach (var file in this.Files)
+                    foreach (var file in Files)
                     {
                         result += file.Size;
                     }
                 }
 
-                if (this.Childs.Count > 0)
+                if (Childs.Count > 0)
                 {
-                    foreach (var child in this.Childs)
+                    foreach (var child in Childs)
                     {
                         result += child.SizeWhichCanBeDeleted(ref sum, ref directorySpace);
                     }
                 }
 
-                if(result <= 100000)
+                if (result <= 100000)
                 {
                     sum += result;
                 }
 
-                this.Size = result;
+                Size = result;
                 directorySpace.Add(result);
-                return this.Size;                       
-            }           
+                return Size;
+            }
         }
 
         class ElfFile
         {
-            public string Name { get; set;}
+            public string Name { get; set; }
             public int Size { get; set; }
 
-            public ElfFile(string name, int size) 
+            public ElfFile(string name, int size)
             {
-                Name= name;
+                Name = name;
                 Size = size;
             }
         }

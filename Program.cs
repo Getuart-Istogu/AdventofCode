@@ -1,10 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using AdventofCode;
+using AdventofCode.Puzzle;
 using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
-int result = Day7.Part1();
-Console.WriteLine(result); 
+List<(int, int)> visibles = new List<(int, int)>();
+int maxScenicScore = 0;
+int result = Day8.CountVisibleTrees(ref visibles, ref maxScenicScore);
+Console.WriteLine(result);
+
 
 
 static int Day6(int amountOfUniqueCharsNeeded)
