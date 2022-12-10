@@ -3,9 +3,8 @@ using AdventofCode.Puzzle;
 using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
-List<(int, int)> visibles = new List<(int, int)>();
-int maxScenicScore = 0;
-int result = Day8.CountVisibleTrees(ref visibles, ref maxScenicScore);
+Day9 day9 = new Day9(10);
+int result = day9.CountUniqueVisits();
 Console.WriteLine(result);
 
 
