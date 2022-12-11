@@ -3,9 +3,10 @@ using AdventofCode.Puzzle;
 using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
-Day9 day9 = new Day9(10);
-int result = day9.CountUniqueVisits();
-Console.WriteLine(result);
+Day10 day10= new Day10();
+var crtDrawing = day10.Part2();
+foreach(var item in crtDrawing)
+    Console.WriteLine(item);
 
 
 
