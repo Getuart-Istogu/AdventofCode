@@ -3,10 +3,8 @@ using AdventofCode.Puzzle;
 using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
-Day10 day10= new Day10();
-var crtDrawing = day10.Part2();
-foreach(var item in crtDrawing)
-    Console.WriteLine(item);
+Day11 day11 = new Day11();
+Console.WriteLine(day11.SolvePart2());
 
 
 
